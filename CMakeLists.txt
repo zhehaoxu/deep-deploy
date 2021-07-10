@@ -19,3 +19,7 @@ target_link_libraries(mobilenet ${OpenCV_LIBS})
 add_executable(yolov3 ./mnn/yolov3.cc)
 target_link_libraries(yolov3 MNN)
 target_link_libraries(yolov3 ${OpenCV_LIBS})
+
+add_executable(yolov3_hc ./mnn/yolov3_hc.cc)
+target_link_libraries(yolov3_hc MNN)
+target_link_libraries(yolov3_hc ${OpenCV_LIBS})

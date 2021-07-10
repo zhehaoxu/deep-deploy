@@ -8,6 +8,49 @@
 #include <vector>
 
 using namespace MNN;
+
+void decode(Tensor *conv_output, std::vector<std::vector<float>> &anchors,
+            int stride, std::vector<std::vector<float>> &boxes) {
+  int channel = conv_output->shape()[1];
+  int height = conv_output->shape()[2];
+  int width = conv_output->shape()[3];
+  int size = height * width;
+  auto values = conv_output->host<float>();
+
+  std::vector<float> nhwc;
+
+  // weird layout, just don't know why
+  nc4hw4_to_nhwc(conv_output, 8, nhwc);
+
+  int anchor_pre_scale = anchors.size();
+  int preds_pre_scale = channel / anchor_pre_scale;
+  for (size_t h = 0; h < height; h++) {
+    for (size_t w = 0; w < width; w++) {
+      for (size_t c = 0; c < anchor_pre_scale; c++) {
+        std::vector<float> box;
+        int index = (h * width + w) * channel + c * preds_pre_scale;
+
+        float dx = nhwc[index];
+        float dy = nhwc[index + 1];
+        float dw = nhwc[index + 2];
+        float dh = nhwc[index + 3];
+        float conf = nhwc[index + 4];
+
+        box.push_back((sigmoid(dx) + w) * stride);
+        box.push_back((sigmoid(dy) + h) * stride);
+        box.push_back(std::exp(dw) * anchors[c][0] * stride);
+        box.push_back(std::exp(dh) * anchors[c][1] * stride);
+        box.push_back(sigmoid(conf));
+        for (size_t k = 5; k < preds_pre_scale; k++) {
+          box.push_back(sigmoid(nhwc[index + k]));
+        }
+        boxes.push_back(box);
+      }
+    }
+  }
+}
+// TODO: refine code and draw pretty box
+
 int main(int argc, char const *argv[]) {
   std::shared_ptr<Interpreter> net(Interpreter::createFromFile(argv[1]));
   ScheduleConfig config;
@@ -20,9 +63,9 @@ int main(int argc, char const *argv[]) {
   // net->resizeTensor(input, shape);
   // net->resizeSession(session);
 
-  auto soutput = net->getSessionOutput(session, "pred_sbbox/concat_2");
-  auto moutput = net->getSessionOutput(session, "pred_mbbox/concat_2");
-  auto loutput = net->getSessionOutput(session, "pred_lbbox/concat_2");
+  auto soutput = net->getSessionOutput(session, "conv_sbbox/BiasAdd");
+  auto moutput = net->getSessionOutput(session, "conv_mbbox/BiasAdd");
+  auto loutput = net->getSessionOutput(session, "conv_lbbox/BiasAdd");
 
   cv::Mat img = cv::imread(argv[2]);
   cv::Mat dst;
@@ -65,47 +108,18 @@ int main(int argc, char const *argv[]) {
   input->copyFromHostTensor(tensor);
   net->runSession(session);
 
-  auto sbox = soutput->host<float>();
-  auto mbox = moutput->host<float>();
-  auto lbox = loutput->host<float>();
-
   std::vector<std::vector<float>> boxes;
+  std::vector<std::vector<float>> sanchors = {
+      {1.25, 1.625}, {2.0, 3.75}, {4.125, 2.875}};
+  std::vector<std::vector<float>> manchors = {
+      {1.875, 3.8125}, {3.875, 2.8125}, {3.6875, 7.4375}};
+  std::vector<std::vector<float>> lanchors = {
+      {3.625, 2.8125}, {4.875, 6.1875}, {11.65625, 10.1875}};
+  std::vector<int> strides{8, 16, 32};
 
-  int sh = soutput->shape()[1];
-  int sw = soutput->shape()[2];
-  int sanchors = soutput->shape()[3];
-  int spreds = soutput->shape()[4];
-  for (size_t i = 0; i < sh * sw * sanchors; i++) {
-    std::vector<float> box;
-    for (size_t j = 0; j < spreds; j++) {
-      box.push_back(sbox[j + i * spreds]);
-    }
-    boxes.push_back(box);
-  }
-
-  int mh = moutput->shape()[1];
-  int mw = moutput->shape()[2];
-  int manchors = moutput->shape()[3];
-  int mpreds = moutput->shape()[4];
-  for (size_t i = 0; i < mh * mw * manchors; i++) {
-    std::vector<float> box;
-    for (size_t j = 0; j < mpreds; j++) {
-      box.push_back(mbox[j + i * mpreds]);
-    }
-    boxes.push_back(box);
-  }
-
-  int lh = loutput->shape()[1];
-  int lw = loutput->shape()[2];
-  int lanchors = loutput->shape()[3];
-  int lpreds = loutput->shape()[4];
-  for (size_t i = 0; i < lh * lw * lanchors; i++) {
-    std::vector<float> box;
-    for (size_t j = 0; j < lpreds; j++) {
-      box.push_back(lbox[j + i * lpreds]);
-    }
-    boxes.push_back(box);
-  }
+  decode(soutput, sanchors, strides[0], boxes);
+  decode(moutput, manchors, strides[1], boxes);
+  decode(loutput, lanchors, strides[2], boxes);
 
   float score_threshold = 0.3;
   std::vector<std::vector<float>> after_boxes;
