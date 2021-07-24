@@ -16,9 +16,10 @@
 ## use
 ### image classification
 
-| model              | source                                                       | demo                                                         |
-| ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| Mobilenet V1/V2/V3 | [link](https://github.com/tensorflow/models/tree/master/research/slim) | [src](https://github.com/zhehaoxu/deep-deploy/blob/main/mnn/mobilenet.cc) |
+| model              | source                                                       | demo                                                         | note                             |
+| ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | -------------------------------- |
+| MobileNet V1/V2/V3 | [link](https://github.com/tensorflow/models/tree/master/research/slim) | [src](https://github.com/zhehaoxu/deep-deploy/blob/main/mnn/mobilenet.cc) |                                  |
+| EfficientNet       | [link](https://github.com/tensorflow/tpu/tree/master/models/official/efficientnet) | [src](https://github.com/zhehaoxu/deep-deploy/blob/main/mnn/efficientnet.cc) | AdvProp use different preprocess |
 
 ```
 ./mobilenet mobilenet_v2.mnn cat.jpg
@@ -49,7 +50,19 @@ Output:
 
 ![detection](./images/output.jpg)
 
+### image segmentation
 
+| model      | source                                                       | demo                                                         | note |
+| ---------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---- |
+| Deeplab V3 | [link](https://github.com/open-mmlab/mmsegmentation/tree/master/configs/deeplabv3) | [src](https://github.com/zhehaoxu/deep-deploy/blob/main/mnn/deeplab.cc) |      |
+
+```
+./deeplab deeplab.mnn image1.jpg
+```
+
+Output:
+
+![segmentation](./images/segmentation.jpg)
 
 ## tools
 

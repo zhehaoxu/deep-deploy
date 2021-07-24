@@ -16,6 +16,14 @@ add_executable(mobilenet ./mnn/mobilenet.cc)
 target_link_libraries(mobilenet MNN)
 target_link_libraries(mobilenet ${OpenCV_LIBS})
 
+add_executable(efficientnet ./mnn/efficientnet.cc)
+target_link_libraries(efficientnet MNN)
+target_link_libraries(efficientnet ${OpenCV_LIBS})
+
+add_executable(deeplab ./mnn/deeplab.cc)
+target_link_libraries(deeplab MNN)
+target_link_libraries(deeplab ${OpenCV_LIBS})
+
 add_executable(yolov3 ./mnn/yolov3.cc)
 target_link_libraries(yolov3 MNN)
 target_link_libraries(yolov3 ${OpenCV_LIBS})

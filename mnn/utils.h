@@ -13,80 +13,82 @@
 #include <vector>
 using namespace MNN;
 
-// BGR order, color from
-// https://github.com/facebookresearch/detectron2/blob/master/detectron2/utils/colormap.py
-// we may find a better way to get colormap
-std::vector<cv::Scalar> COLOR_MAP{
-    cv::Scalar(188, 113, 0),   cv::Scalar(24, 82, 216),
-    cv::Scalar(31, 176, 236),  cv::Scalar(141, 46, 125),
-    cv::Scalar(47, 171, 118),  cv::Scalar(237, 189, 76),
-    cv::Scalar(46, 19, 161),   cv::Scalar(76, 76, 76),
-    cv::Scalar(153, 153, 153), cv::Scalar(0, 0, 255),
-    cv::Scalar(0, 127, 255),   cv::Scalar(0, 190, 190),
-    cv::Scalar(0, 255, 0),     cv::Scalar(255, 0, 0),
-    cv::Scalar(255, 0, 170),   cv::Scalar(0, 84, 84),
-    cv::Scalar(0, 170, 84),    cv::Scalar(0, 255, 84),
-    cv::Scalar(0, 84, 170),    cv::Scalar(0, 170, 170),
-    cv::Scalar(0, 255, 170),   cv::Scalar(0, 84, 255),
-    cv::Scalar(0, 170, 255),   cv::Scalar(0, 255, 255),
-    cv::Scalar(127, 84, 0),    cv::Scalar(127, 170, 0),
-    cv::Scalar(127, 255, 0),   cv::Scalar(127, 0, 84),
-    cv::Scalar(127, 84, 84),   cv::Scalar(127, 170, 84),
-    cv::Scalar(127, 255, 84),  cv::Scalar(127, 0, 170),
-    cv::Scalar(127, 84, 170),  cv::Scalar(127, 170, 170),
-    cv::Scalar(127, 255, 170), cv::Scalar(127, 0, 255),
-    cv::Scalar(127, 84, 255),  cv::Scalar(127, 170, 255),
-    cv::Scalar(127, 255, 255), cv::Scalar(255, 84, 0),
-    cv::Scalar(255, 170, 0),   cv::Scalar(255, 255, 0),
-    cv::Scalar(255, 0, 84),    cv::Scalar(255, 84, 84),
-    cv::Scalar(255, 170, 84),  cv::Scalar(255, 255, 84),
-    cv::Scalar(255, 0, 170),   cv::Scalar(255, 84, 170),
-    cv::Scalar(255, 170, 170), cv::Scalar(255, 255, 170),
-    cv::Scalar(255, 0, 255),   cv::Scalar(255, 84, 255),
-    cv::Scalar(255, 170, 255), cv::Scalar(0, 0, 84),
-    cv::Scalar(0, 0, 127),     cv::Scalar(0, 0, 170),
-    cv::Scalar(0, 0, 212),     cv::Scalar(0, 0, 255),
-    cv::Scalar(0, 42, 0),      cv::Scalar(0, 84, 0),
-    cv::Scalar(0, 127, 0),     cv::Scalar(0, 170, 0),
-    cv::Scalar(0, 212, 0),     cv::Scalar(0, 255, 0),
-    cv::Scalar(42, 0, 0),      cv::Scalar(84, 0, 0),
-    cv::Scalar(127, 0, 0),     cv::Scalar(170, 0, 0),
-    cv::Scalar(212, 0, 0),     cv::Scalar(255, 0, 0),
-    cv::Scalar(0, 0, 0),       cv::Scalar(36, 36, 36),
-    cv::Scalar(218, 218, 218), cv::Scalar(255, 255, 255),
-    cv::Scalar(0, 212, 0),     cv::Scalar(0, 255, 0),
-    cv::Scalar(42, 0, 0),      cv::Scalar(84, 0, 0),
-    cv::Scalar(127, 0, 0),     cv::Scalar(170, 0, 0),
-};
+// color from
+// https://github.com/open-mmlab/mmsegmentation/blob/master/mmseg/core/evaluation/class_names.py
+std::vector<std::vector<int>> COLOR_MAP{
+    {120, 120, 120}, {180, 120, 120}, {6, 230, 230},   {80, 50, 50},
+    {4, 200, 3},     {120, 120, 80},  {140, 140, 140}, {204, 5, 255},
+    {230, 230, 230}, {4, 250, 7},     {224, 5, 255},   {235, 255, 7},
+    {150, 5, 61},    {120, 120, 70},  {8, 255, 51},    {255, 6, 82},
+    {143, 255, 140}, {204, 255, 4},   {255, 51, 7},    {204, 70, 3},
+    {0, 102, 200},   {61, 230, 250},  {255, 6, 51},    {11, 102, 255},
+    {255, 7, 71},    {255, 9, 224},   {9, 7, 230},     {220, 220, 220},
+    {255, 9, 92},    {112, 9, 255},   {8, 255, 214},   {7, 255, 224},
+    {255, 184, 6},   {10, 255, 71},   {255, 41, 10},   {7, 255, 255},
+    {224, 255, 8},   {102, 8, 255},   {255, 61, 6},    {255, 194, 7},
+    {255, 122, 8},   {0, 255, 20},    {255, 8, 41},    {255, 5, 153},
+    {6, 51, 255},    {235, 12, 255},  {160, 150, 20},  {0, 163, 255},
+    {140, 140, 140}, {250, 10, 15},   {20, 255, 0},    {31, 255, 0},
+    {255, 31, 0},    {255, 224, 0},   {153, 255, 0},   {0, 0, 255},
+    {255, 71, 0},    {0, 235, 255},   {0, 173, 255},   {31, 0, 255},
+    {11, 200, 200},  {255, 82, 0},    {0, 255, 245},   {0, 61, 255},
+    {0, 255, 112},   {0, 255, 133},   {255, 0, 0},     {255, 163, 0},
+    {255, 102, 0},   {194, 255, 0},   {0, 143, 255},   {51, 255, 0},
+    {0, 82, 255},    {0, 255, 41},    {0, 255, 173},   {10, 0, 255},
+    {173, 255, 0},   {0, 255, 153},   {255, 92, 0},    {255, 0, 255},
+    {255, 0, 245},   {255, 0, 102},   {255, 173, 0},   {255, 0, 20},
+    {255, 184, 184}, {0, 31, 255},    {0, 255, 61},    {0, 71, 255},
+    {255, 0, 204},   {0, 255, 194},   {0, 255, 82},    {0, 10, 255},
+    {0, 112, 255},   {51, 0, 255},    {0, 194, 255},   {0, 122, 255},
+    {0, 255, 163},   {255, 153, 0},   {0, 255, 10},    {255, 112, 0},
+    {143, 255, 0},   {82, 0, 255},    {163, 255, 0},   {255, 235, 0},
+    {8, 184, 170},   {133, 0, 255},   {0, 255, 92},    {184, 0, 255},
+    {255, 0, 31},    {0, 184, 255},   {0, 214, 255},   {255, 0, 112},
+    {92, 255, 0},    {0, 224, 255},   {112, 224, 255}, {70, 184, 160},
+    {163, 0, 255},   {153, 0, 255},   {71, 255, 0},    {255, 0, 163},
+    {255, 204, 0},   {255, 0, 143},   {0, 255, 235},   {133, 255, 0},
+    {255, 0, 235},   {245, 0, 255},   {255, 0, 122},   {255, 245, 0},
+    {10, 190, 212},  {214, 255, 0},   {0, 204, 255},   {20, 0, 255},
+    {255, 255, 0},   {0, 153, 255},   {0, 41, 255},    {0, 255, 204},
+    {41, 0, 255},    {41, 255, 0},    {173, 0, 255},   {0, 245, 255},
+    {71, 0, 255},    {122, 0, 255},   {0, 255, 184},   {0, 92, 255},
+    {184, 255, 0},   {0, 133, 255},   {255, 214, 0},   {25, 194, 194},
+    {102, 255, 0},   {92, 0, 255}};
 
-std::unordered_map<int, std::string> COCO{
-    {0, "person"},         {1, "bicycle"},       {2, "car"},
-    {3, "motorbike"},      {4, "aeroplane"},     {5, "bus"},
-    {6, "train"},          {7, "truck"},         {8, "boat"},
-    {9, "traffic light"},  {10, "fire hydrant"}, {11, "stop sign"},
-    {12, "parking meter"}, {13, "bench"},        {14, "bird"},
-    {15, "cat"},           {16, "dog"},          {17, "horse"},
-    {18, "sheep"},         {19, "cow"},          {20, "elephant"},
-    {21, "bear"},          {22, "zebra"},        {23, "giraffe"},
-    {24, "backpack"},      {25, "umbrella"},     {26, "handbag"},
-    {27, "tie"},           {28, "suitcase"},     {29, "frisbee"},
-    {30, "skis"},          {31, "snowboard"},    {32, "sports ball"},
-    {33, "kite"},          {34, "baseball bat"}, {35, "baseball glove"},
-    {36, "skateboard"},    {37, "surfboard"},    {38, "tennis racket"},
-    {39, "bottle"},        {40, "wine glass"},   {41, "cup"},
-    {42, "fork"},          {43, "knife"},        {44, "spoon"},
-    {45, "bowl"},          {46, "banana"},       {47, "apple"},
-    {48, "sandwich"},      {49, "orange"},       {50, "broccoli"},
-    {51, "carrot"},        {52, "hot dog"},      {53, "pizza"},
-    {54, "donut"},         {55, "cake"},         {56, "chair"},
-    {57, "sofa"},          {58, "pottedplant"},  {59, "bed"},
-    {60, "diningtable"},   {61, "toilet"},       {62, "tvmonitor"},
-    {63, "laptop"},        {64, "mouse"},        {65, "remote"},
-    {66, "keyboard"},      {67, "cell phone"},   {68, "microwave"},
-    {69, "oven"},          {70, "toaster"},      {71, "sink"},
-    {72, "refrigerator"},  {73, "book"},         {74, "clock"},
-    {75, "vase"},          {76, "scissors"},     {77, "teddy bear"},
-    {78, "hair drier"},    {79, "toothbrush"}};
+std::vector<std::string> COCO{
+    "person",        "bicycle",       "car",           "motorbike",
+    "aeroplane",     "bus",           "train",         "truck",
+    "boat",          "traffic light", "fire hydrant",  "stop sign",
+    "parking meter", "bench",         "bird",          "cat",
+    "dog",           "horse",         "sheep",         "cow",
+    "elephant",      "bear",          "zebra",         "giraffe",
+    "backpack",      "umbrella",      "handbag",       "tie",
+    "suitcase",      "frisbee",       "skis",          "snowboard",
+    "sports ball",   "kite",          "baseball bat",  "baseball glove",
+    "skateboard",    "surfboard",     "tennis racket", "bottle",
+    "wine glass",    "cup",           "fork",          "knife",
+    "spoon",         "bowl",          "banana",        "apple",
+    "sandwich",      "orange",        "broccoli",      "carrot",
+    "hot dog",       "pizza",         "donut",         "cake",
+    "chair",         "sofa",          "pottedplant",   "bed",
+    "diningtable",   "toilet",        "tvmonitor",     "laptop",
+    "mouse",         "remote",        "keyboard",      "cell phone",
+    "microwave",     "oven",          "toaster",       "sink",
+    "refrigerator",  "book",          "clock",         "vase",
+    "scissors",      "teddy bear",    "hair drier",    "toothbrush"};
+
+std::vector<std::string> VOC{
+    "background", "aeroplane",   "bicycle", "bird",  "boat",
+    "bottle",     "bus",         "car",     "cat",   "chair",
+    "cow",        "diningtable", "dog",     "horse", "motorbike",
+    "person",     "pottedplant", "sheep",   "sofa",  "train",
+    "tvmonitor"};
+
+std::vector<std::string> CITYSCAPES{
+    "road",    "sidewalk", "building", "wall",         "fence",
+    "pole",    "traffic",  "light",    "traffic sign", "vegetation",
+    "terrain", "sky",      "person",   "rider",        "car",
+    "truck",   "bus",      "train",    "motorcycle",   "bicycle"};
 
 float sigmoid(float x) { return 1. / (1. + std::exp(x * (-1.))); }
 
@@ -161,14 +163,15 @@ void nms(std::vector<std::vector<float>> &src_boxes,
 
 void draw_box(cv::Mat &image, std::vector<std::vector<float>> &boxes,
               bool show_label = true,
-              const std::unordered_map<int, std::string> &labels = {}) {
+              const std::vector<std::string> &labels = {}) {
   for (size_t i = 0; i < boxes.size(); i++) {
+    std::vector<int> color_ = COLOR_MAP[boxes[i][5]];
     cv::rectangle(image, cv::Point(int(boxes[i][0]), int(boxes[i][1])),
                   cv::Point(int(boxes[i][2]), int(boxes[i][3])),
-                  COLOR_MAP[boxes[i][5]]);
+                  cv::Scalar(color_[2], color_[1], color_[0]));
     if (show_label) {
       int prob = int(boxes[i][4] * 100 + 0.5);
-      std::string text = labels.at(boxes[i][5]) + ":" +
+      std::string text = labels[boxes[i][5]] + ":" +
                          std::to_string(prob / 100) + "." +
                          std::to_string(prob % 100);
       int font = cv::FONT_HERSHEY_SIMPLEX;
@@ -181,7 +184,7 @@ void draw_box(cv::Mat &image, std::vector<std::vector<float>> &boxes,
       cv::rectangle(image, cv::Point(int(boxes[i][0]), int(boxes[i][1])),
                     cv::Point(int(boxes[i][0]) + text_size.width,
                               int(boxes[i][1]) + text_size.height + 4),
-                    COLOR_MAP[boxes[i][5]], -1);
+                    cv::Scalar(color_[2], color_[1], color_[0]), -1);
       cv::Point origin;
       origin.x = int(boxes[i][0]);
       origin.y = int(boxes[i][1]) + text_size.height + 2;

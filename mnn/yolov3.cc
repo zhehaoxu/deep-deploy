@@ -49,6 +49,7 @@ int main(int argc, char const *argv[]) {
                      pad_right, cv::BORDER_CONSTANT, 0);
 
   std::vector<float> image;
+  auto nchwTensor = new Tensor(input, Tensor::CAFFE);
   for (size_t i = 0; i < 3; i++) {
     int index = 0;
     for (size_t r = 0; r < net_height; r++) {

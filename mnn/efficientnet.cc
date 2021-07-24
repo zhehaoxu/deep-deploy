@@ -26,11 +26,14 @@ int main(int argc, char const *argv[]) {
   cv::cvtColor(img, img, cv::COLOR_BGR2RGB);
 
   auto nchwTensor = new Tensor(input, Tensor::CAFFE);
+
+  float mean[] = {0.485 * 255, 0.456 * 255, 0.406 * 255};
+  float stddev[] = {0.229 * 255, 0.224 * 255, 0.225 * 255};
   // convert nhwc layout to nchw
   for (size_t i = 0; i < channel; i++) {
     for (size_t j = 0; j < size; j++) {
       float value = *(img.data + j * channel + i);
-      nchwTensor->host<float>()[size * i + j] = value / 128.0 - 1.0;
+      nchwTensor->host<float>()[size * i + j] = (value - mean[i]) / stddev[i];
     }
   }
 
@@ -39,8 +42,9 @@ int main(int argc, char const *argv[]) {
   net->runSession(session);
   std::vector<std::pair<int, float>> label;
   auto values = output->host<float>();
+  int offset = 1;
   for (int i = 0; i < output->elementSize(); ++i) {
-    label.push_back(std::make_pair(i, values[i]));
+    label.push_back(std::make_pair(i + offset, values[i]));
   }
 
   std::sort(label.begin(), label.end(),
