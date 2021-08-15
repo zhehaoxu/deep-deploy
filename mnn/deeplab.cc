@@ -63,9 +63,8 @@ int main(int argc, char const *argv[]) {
   for (size_t i = 0; i < scaled_height; i++) {
     for (size_t j = 0; j < scaled_width; j++) {
       int cls_id = values[i * width + j];
-      map.at<cv::Vec3b>(i, j)[0] = COLOR_MAP[cls_id][2];
-      map.at<cv::Vec3b>(i, j)[1] = COLOR_MAP[cls_id][1];
-      map.at<cv::Vec3b>(i, j)[2] = COLOR_MAP[cls_id][0];
+      map.at<cv::Vec3b>(i, j) = cv::Vec3b(
+          COLOR_MAP[cls_id][2], COLOR_MAP[cls_id][1], COLOR_MAP[cls_id][0]);
     }
   }
   cv::resize(map, map, cv::Size(img_width, img_height), 0, 0,

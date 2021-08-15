@@ -20,6 +20,7 @@
 | ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | -------------------------------- |
 | MobileNet V1/V2/V3 | [link](https://github.com/tensorflow/models/tree/master/research/slim) | [src](https://github.com/zhehaoxu/deep-deploy/blob/main/mnn/mobilenet.cc) |                                  |
 | EfficientNet       | [link](https://github.com/tensorflow/tpu/tree/master/models/official/efficientnet) | [src](https://github.com/zhehaoxu/deep-deploy/blob/main/mnn/efficientnet.cc) | AdvProp use different preprocess |
+| RepVGG             | [link](https://github.com/DingXiaoH/RepVGG)                  | [src](https://github.com/zhehaoxu/deep-deploy/blob/main/mnn/efficientnet.cc) |                                  |
 
 ```
 ./mobilenet mobilenet_v2.mnn cat.jpg
@@ -63,6 +64,26 @@ Output:
 Output:
 
 ![segmentation](./images/segmentation.jpg)
+
+### cartoonize/style transfer/paint
+
+| model                | source                                                       | demo                                                         | note |
+| -------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ---- |
+| White Box Cartoonize | [link](https://github.com/SystemErrorWang/White-box-Cartoonization) | [src](https://github.com/zhehaoxu/deep-deploy/blob/main/mnn/white-box-cartoonize.cc) |      |
+
+```shell
+./white-box-cartoonize cartoonize.mnn food16.jpg 
+```
+
+### super resolution
+
+| model | source                                            | demo                                                         | note |
+| ----- | ------------------------------------------------- | ------------------------------------------------------------ | ---- |
+| DBPN  | [link](https://github.com/alterzero/DBPN-Pytorch) | [src](https://github.com/zhehaoxu/deep-deploy/blob/main/mnn/dbpn.cc) |      |
+
+```
+./dbpn dbpn_x2.mnn butterfly_x2.jpg
+```
 
 ## tools
 

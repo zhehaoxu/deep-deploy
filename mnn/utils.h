@@ -92,6 +92,16 @@ std::vector<std::string> CITYSCAPES{
 
 float sigmoid(float x) { return 1. / (1. + std::exp(x * (-1.))); }
 
+int clamp(float value, float min, float max) {
+  if (value < min) {
+    return min;
+  }
+  if (value > max) {
+    return max;
+  }
+  return value;
+}
+
 void nc4hw4_to_nhwc(Tensor *tensor, int split, std::vector<float> &dst) {
   int channel = tensor->shape()[1];
   int height = tensor->shape()[2];
